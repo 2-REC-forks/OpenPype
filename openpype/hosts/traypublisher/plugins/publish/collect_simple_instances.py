@@ -42,9 +42,9 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
         instance.data["stagingDir"] = tmp_folder
         instance.context.data["cleanupFullPaths"].append(tmp_folder)
 
-        self.log.debug((
-            "Created temp staging directory for instance {}. {}"
-        ).format(instance_label, tmp_folder))
+        self.log.debug(
+            (f"Created temp staging directory for instance {instance_label}. "
+             f"{tmp_folder}"))
 
         # Store filepaths for validation of their existence
         source_filepaths = []
@@ -70,19 +70,19 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
             representation_files_mapping
         )
 
+        try:
+            instance.data["originalBasename"] = os.path.basename(
+                source_filepaths[0])
+        except IndexError:
+            self.log.error("No source files found.")
+
         instance.data["source"] = source
         instance.data["sourceFilepaths"] = list(set(source_filepaths))
 
-        self.log.debug(
-            (
-                "Created Simple Settings instance \"{}\""
-                " with {} representations: {}"
-            ).format(
-                instance_label,
-                len(instance.data["representations"]),
-                ", ".join(repre_names)
-            )
-        )
+        self.log.debug((
+            f'Created Simple Settings instance "{instance_label}" with '
+            f'{len(instance.data["representations"])} representations: '
+            f'{", ".join(repre_names)}'))
 
     def _create_main_representations(
         self,
@@ -92,6 +92,27 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
         repre_names,
         representation_files_mapping
     ):
+        """Create main representations on instance.
+
+        This will create representations of instance if there are
+        file items.
+
+        Modifying passed arguments on the fly.
+
+        Arguments:
+            instance (pyblish.api.Instance): Pyblish instance to process.
+            source_filepaths (list): List of source filepaths.
+            repre_names_counter (Dict[str, int]): Store count of representation
+                names.
+            repre_names (List[str]): All used representation names. For
+                logging purposes.
+            representation_files_mapping (list): Mapping to check presence of
+                the same files in data for review and main representation.
+
+        Returns:
+            str: source file path of the last file item.
+
+        """
         creator_attributes = instance.data["creator_attributes"]
         filepath_items = creator_attributes["representation_files"]
         if not isinstance(filepath_items, list):
@@ -127,6 +148,24 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
         repre_names,
         representation_files_mapping
     ):
+        """Create review representation on instance.
+
+        Modifying passed arguments on the fly.
+
+        Arguments:
+            instance (pyblish.api.Instance): Pyblish instance to process.
+            source_filepaths (list): List of source filepaths.
+            repre_names_counter (Dict[str, int]): Store count of representation
+                names.
+            repre_names (List[str]): All used representation names. For
+                logging purposes.
+            representation_files_mapping (list): Mapping to check presence of
+                the same files in data for review and main representation.
+
+        Returns:
+            str: source file path of the last file item.
+
+        """
         # Skip review representation creation if there are no representations
         #   created for "main" part
         #   - review representation must not be created in that case so
@@ -154,7 +193,7 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
         }
         source_filepaths.extend(filepaths)
         # First try to find out representation with same filepaths
-        #   so it's not needed to create new representation just for review
+        # so it's not needed to create new representation just for review
         review_representation = None
         # Review path (only for logging)
         review_path = None
@@ -177,12 +216,13 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
             instance.data["families"].append("review")
 
         review_representation["tags"].append("review")
-        self.log.debug("Representation {} was marked for review. {}".format(
-            review_representation["name"], review_path
-        ))
+        self.log.debug((
+            f'Representation {review_representation["name"]} was marked '
+            f'for review. {review_path}'))
 
+    @staticmethod
     def _create_representation_data(
-        self, filepath_item, repre_names_counter, repre_names
+        filepath_item, repre_names_counter, repre_names
     ):
         """Create new representation data based on file item.
 
@@ -209,7 +249,7 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
         else:
             counter = repre_names_counter[repre_name]
             repre_names_counter[repre_name] += 1
-            repre_name = "{}_{}".format(repre_name, counter)
+            repre_name = f"{repre_name}_{counter}"
         repre_names.append(repre_name)
         return {
             "ext": repre_ext,
@@ -219,7 +259,9 @@ class CollectSettingsSimpleInstances(pyblish.api.InstancePlugin):
             "tags": []
         }
 
-    def _calculate_source(self, filepaths):
+    @staticmethod
+    def _calculate_source(filepaths):
+        source = None
         cols, rems = clique.assemble(filepaths)
         if cols:
             source = cols[0].format("{head}{padding}{tail}")
