@@ -1,7 +1,6 @@
 import os
 import re
 import tempfile
-from pprint import pformat
 from copy import deepcopy
 
 import pyblish.api
@@ -108,6 +107,7 @@ class ExtractSubsetResources(openpype.api.Extractor):
                     + r_handle_start
                     + r_handle_end
                 )
+
             else:
                 # handles are not retimed
                 source_end_handles = (
@@ -136,6 +136,9 @@ class ExtractSubsetResources(openpype.api.Extractor):
         source_duration_handles = (
             source_end_handles - source_start_handles) + 1
 
+        self.log.debug("_ source_duration_handles: {}".format(
+            source_duration_handles))
+
         # create staging dir path
         staging_dir = self.staging_dir(instance)
 
@@ -159,14 +162,29 @@ class ExtractSubsetResources(openpype.api.Extractor):
         if version_data:
             instance.data["versionData"].update(version_data)
 
+        # version data start frame
+        vd_frame_start = frame_start
+        if include_handles:
+            vd_frame_start = frame_start_handle
+
         if r_speed != 1.0:
             instance.data["versionData"].update({
-                "frameStart": frame_start_handle,
+                "frameStart": vd_frame_start,
                 "frameEnd": (
-                    (frame_start_handle + source_duration_handles - 1)
+                    (vd_frame_start + source_duration_handles - 1)
                     - (r_handle_start + r_handle_end)
                 )
             })
+            if not retimed_handles:
+                instance.data["versionData"].update({
+                    "handleStart": handle_start,
+                    "handleEnd": handle_end,
+                    "frameStart": vd_frame_start,
+                    "frameEnd": (
+                        (vd_frame_start + source_duration_handles - 1)
+                        - (handle_start + handle_end)
+                    )
+                })
         self.log.debug("_ i_version_data: {}".format(
             instance.data["versionData"]
         ))
