@@ -517,7 +517,22 @@ def get_errored_instances_from_context(context):
             continue
 
         if result["error"]:
-            instances.append(result["instance"])
+            ######## DUPLICATE_INSTANCES - BEGIN
+            #instances.append(result["instance"])
+            ######## DUPLICATE_INSTANCES - MID
+            #TODO(2-REC): Temporary fix, required changes in Pyblish.
+            # => Add hash+eq functions to "AbstractObject".
+            # @2022/10/14: Pending pull request #387 on "pyblish-base"
+            # https://github.com/pyblish/pyblish-base/pull/387
+            # When done, can replace this change with:
+            #if result["instance"] in instances:
+            instance_id = result["instance"].id
+            for instance in instances:
+                if instance_id == instance.id:
+                    break
+            else:
+                instances.append(result["instance"])
+            ######## DUPLICATE_INSTANCES - END
 
     return instances
 
