@@ -4,6 +4,9 @@ import os
 import openpype.modules
 from openpype.modules import OpenPypeModule
 from openpype_interfaces import IPluginPaths
+######## PLUGINS_PATHS - MID
+from openpype.lib import get_plugins_path
+######## PLUGINS_PATHS - END
 
 
 class RoyalRenderModule(OpenPypeModule, IPluginPaths):
@@ -41,6 +44,15 @@ class RoyalRenderModule(OpenPypeModule, IPluginPaths):
             dict: Dictionary of plugin paths for RR.
         """
         current_dir = os.path.dirname(os.path.abspath(__file__))
+        ######## PLUGINS_PATHS - BEGIN
+        """
         return {
             "publish": [os.path.join(current_dir, "plugins", "publish")]
         }
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path("royalrender", current_dir)
+        return {
+            "publish": [os.path.join(plugins_dir, "publish")]
+        }
+        ######## PLUGINS_PATHS - END

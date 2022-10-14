@@ -45,12 +45,21 @@ _modules_manager = None
 
 log = logging.getLogger(__name__)
 
+######## PLUGINS_PATHS - BEGIN
+"""
 PACKAGE_DIR = os.path.dirname(os.path.abspath(openpype.__file__))
 PLUGINS_DIR = os.path.join(PACKAGE_DIR, "plugins")
 
 # Global plugin paths
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")
+"""
+######## PLUGINS_PATHS - MID
+def _get_publish_path():
+    return os.path.join(openpype.PLUGINS_DIR, "publish")
+def _get_load_path():
+    return os.path.join(openpype.PLUGINS_DIR, "load")
+######## PLUGINS_PATHS - END
 
 
 def _get_modules_manager():
@@ -152,9 +161,17 @@ def install_openpype_plugins(project_name=None, host_name=None):
     load_modules()
 
     log.info("Registering global plug-ins..")
+    ######## PLUGINS_PATHS - BEGIN
+    """
     pyblish.api.register_plugin_path(PUBLISH_PATH)
     pyblish.api.register_discovery_filter(filter_pyblish_plugins)
     register_loader_plugin_path(LOAD_PATH)
+    """
+    ######## PLUGINS_PATHS - MID
+    pyblish.api.register_plugin_path(_get_publish_path())
+    pyblish.api.register_discovery_filter(filter_pyblish_plugins)
+    register_loader_plugin_path(_get_load_path())
+    ######## PLUGINS_PATHS - END
 
     modules_manager = _get_modules_manager()
     publish_plugin_dirs = modules_manager.collect_plugin_paths()["publish"]
@@ -210,9 +227,17 @@ def uninstall_host():
         pass
 
     log.info("Deregistering global plug-ins..")
+    ######## PLUGINS_PATHS - BEGIN
+    """
     pyblish.api.deregister_plugin_path(PUBLISH_PATH)
     pyblish.api.deregister_discovery_filter(filter_pyblish_plugins)
     deregister_loader_plugin_path(LOAD_PATH)
+    """
+    ######## PLUGINS_PATHS - MID
+    pyblish.api.deregister_plugin_path(_get_publish_path())
+    pyblish.api.deregister_discovery_filter(filter_pyblish_plugins)
+    deregister_loader_plugin_path(_get_load_path())
+    ######## PLUGINS_PATHS - END
     log.info("Global plug-ins unregistred")
 
     deregister_host()

@@ -23,12 +23,19 @@ from openpype.pipeline import (
 from openpype.lib import (
     Logger,
     register_event_callback,
+    ######## PLUGINS_PATHS - MID
+    get_plugins_path,
+    ######## PLUGINS_PATHS - END
     emit_event
 )
 import openpype.hosts.blender
 
 HOST_DIR = os.path.dirname(os.path.abspath(openpype.hosts.blender.__file__))
-PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("blender", HOST_DIR)
+######## PLUGINS_PATHS - END
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")
 CREATE_PATH = os.path.join(PLUGINS_DIR, "create")

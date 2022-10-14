@@ -1,6 +1,9 @@
 import os
 from openpype.modules import OpenPypeModule
 from openpype.modules.interfaces import IPluginPaths
+######## PLUGINS_PATHS - MID
+from openpype.lib import get_plugins_path
+######## PLUGINS_PATHS - END
 
 SLACK_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,6 +25,15 @@ class SlackIntegrationModule(OpenPypeModule, IPluginPaths):
     def get_plugin_paths(self):
         """Deadline plugin paths."""
         current_dir = os.path.dirname(os.path.abspath(__file__))
+        ######## PLUGINS_PATHS - BEGIN
+        """
         return {
             "publish": [os.path.join(current_dir, "plugins", "publish")]
         }
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path(self.name, current_dir)
+        return {
+            "publish": [os.path.join(plugins_dir, "publish")]
+        }
+        ######## PLUGINS_PATHS - END

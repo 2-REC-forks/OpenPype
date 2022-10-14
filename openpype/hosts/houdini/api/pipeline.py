@@ -19,6 +19,9 @@ from openpype.hosts.houdini.api import lib, shelves
 from openpype.lib import (
     register_event_callback,
     emit_event,
+    ######## PLUGINS_PATHS - MID
+    get_plugins_path
+    ######## PLUGINS_PATHS - END
 )
 
 from .lib import get_asset_fps
@@ -28,7 +31,11 @@ log = logging.getLogger("openpype.hosts.houdini")
 AVALON_CONTAINERS = "/obj/AVALON_CONTAINERS"
 IS_HEADLESS = not hasattr(hou, "ui")
 
-PLUGINS_DIR = os.path.join(HOUDINI_HOST_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(HOUDINI_HOST_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("houdini", HOUDINI_HOST_DIR)
+######## PLUGINS_PATHS - END
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")
 CREATE_PATH = os.path.join(PLUGINS_DIR, "create")

@@ -126,6 +126,17 @@
             "type": "splitter"
         },
         {
+            "type": "path",
+            "label": "Studio extra path",
+            "key": "studio_extra_path",
+            "multiplatform": true,
+            "multipath": false,
+            "require_restart": true
+        },
+        {
+            "type": "splitter"
+        },
+        {
             "type": "collapsible-wrap",
             "label": "OpenPype deployment control",
             "collapsible": false,

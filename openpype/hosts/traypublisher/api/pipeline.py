@@ -10,13 +10,24 @@ from openpype.pipeline import (
     legacy_io,
 )
 from openpype.host import HostBase, IPublishHost
+######## PLUGINS_PATHS - MID
+from openpype.lib import get_plugins_path
+######## PLUGINS_PATHS - END
 
 
 ROOT_DIR = os.path.dirname(os.path.dirname(
     os.path.abspath(__file__)
 ))
+######## PLUGINS_PATHS - BEGIN
+"""
 PUBLISH_PATH = os.path.join(ROOT_DIR, "plugins", "publish")
 CREATE_PATH = os.path.join(ROOT_DIR, "plugins", "create")
+"""
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("traypublisher", ROOT_DIR)
+PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
+CREATE_PATH = os.path.join(PLUGINS_DIR, "create")
+######## PLUGINS_PATHS - END
 
 
 class TrayPublisherHost(HostBase, IPublishHost):

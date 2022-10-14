@@ -2,7 +2,11 @@ import os
 
 import click
 
-from openpype.lib import get_openpype_execute_args
+######## PLUGINS_PATHS - BEGIN
+#from openpype.lib import get_openpype_execute_args
+######## PLUGINS_PATHS - MID
+from openpype.lib import get_openpype_execute_args, get_plugins_path
+######## PLUGINS_PATHS - END
 from openpype.lib.execute import run_detached_process
 from openpype.modules import OpenPypeModule
 from openpype.modules.interfaces import ITrayAction, IHostAddon
@@ -17,9 +21,17 @@ class StandAlonePublishAddon(OpenPypeModule, ITrayAction, IHostAddon):
 
     def initialize(self, modules_settings):
         self.enabled = modules_settings["standalonepublish_tool"]["enabled"]
+        ######## PLUGINS_PATHS - BEGIN
+        """
         self.publish_paths = [
             os.path.join(STANDALONEPUBLISH_ROOT_DIR, "plugins", "publish")
         ]
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path(self.host_name,
+                                       STANDALONEPUBLISH_ROOT_DIR)
+        self.publish_paths = [os.path.join(plugins_dir, "publish")]
+        ######## PLUGINS_PATHS - END
 
     def tray_init(self):
         return

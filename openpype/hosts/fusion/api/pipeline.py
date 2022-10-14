@@ -11,6 +11,9 @@ from Qt import QtCore
 from openpype.lib import (
     Logger,
     register_event_callback,
+    ######## PLUGINS_PATHS - MID
+    get_plugins_path,
+    ######## PLUGINS_PATHS - END
     emit_event
 )
 from openpype.pipeline import (
@@ -34,7 +37,11 @@ from .lib import (
 
 log = Logger.get_logger(__name__)
 
-PLUGINS_DIR = os.path.join(FUSION_HOST_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(FUSION_HOST_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("fusion", FUSION_HOST_DIR)
+######## PLUGINS_PATHS - END
 
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")

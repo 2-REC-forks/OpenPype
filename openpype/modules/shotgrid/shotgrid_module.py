@@ -6,6 +6,9 @@ from openpype_interfaces import (
 )
 
 from openpype.modules import OpenPypeModule
+######## PLUGINS_PATHS - MID
+from openpype.lib import get_plugins_path
+######## PLUGINS_PATHS - END
 
 SHOTGRID_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,11 +34,20 @@ class ShotgridModule(OpenPypeModule, ITrayModule, IPluginPaths):
         return {"PROJECT_ID": self.project_id}
 
     def get_plugin_paths(self):
+        ######## PLUGINS_PATHS - BEGIN
+        """
         return {
             "publish": [
                 os.path.join(SHOTGRID_MODULE_DIR, "plugins", "publish")
             ]
         }
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path(self.name, SHOTGRID_MODULE_DIR)
+        return {
+            "publish": [os.path.join(plugins_dir, "publish")]
+        }
+        ######## PLUGINS_PATHS - END
 
     def get_launch_hook_paths(self):
         return os.path.join(SHOTGRID_MODULE_DIR, "hooks")

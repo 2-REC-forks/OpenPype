@@ -12,7 +12,11 @@ from openpype.modules.interfaces import (
     ISettingsChangeListener
 )
 from openpype.settings import SaveWarningExc
-from openpype.lib import Logger
+######## PLUGINS_PATHS - BEGIN
+#from openpype.lib import Logger
+######## PLUGINS_PATHS - MID
+from openpype.lib import Logger, get_plugins_path
+######## PLUGINS_PATHS - END
 
 FTRACK_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 _URL_NOT_SET = object()
@@ -33,22 +37,38 @@ class FtrackModule(
         self._settings_ftrack_url = ftrack_settings["ftrack_server"]
         self._ftrack_url = _URL_NOT_SET
 
+        ######## PLUGINS_PATHS - BEGIN
+        """
         current_dir = os.path.dirname(os.path.abspath(__file__))
+        """
+        ######## PLUGINS_PATHS - MID
         low_platform = platform.system().lower()
 
         # Server event handler paths
+        ######## PLUGINS_PATHS - BEGIN
+        """
         server_event_handlers_paths = [
             os.path.join(current_dir, "event_handlers_server")
         ]
+        """
+        ######## PLUGINS_PATHS - MID
+        server_event_handlers_paths = self.get_handlers_paths()
+        ######## PLUGINS_PATHS - END
         settings_server_paths = ftrack_settings["ftrack_events_path"]
         if isinstance(settings_server_paths, dict):
             settings_server_paths = settings_server_paths[low_platform]
         server_event_handlers_paths.extend(settings_server_paths)
 
         # User event handler paths
+        ######## PLUGINS_PATHS - BEGIN
+        """
         user_event_handlers_paths = [
             os.path.join(current_dir, "event_handlers_user")
         ]
+        """
+        ######## PLUGINS_PATHS - MID
+        user_event_handlers_paths = self.get_handlers_paths(server=False)
+        ######## PLUGINS_PATHS - MID
         settings_action_paths = ftrack_settings["ftrack_actions_path"]
         if isinstance(settings_action_paths, dict):
             settings_action_paths = settings_action_paths[low_platform]
@@ -81,9 +101,41 @@ class FtrackModule(
 
     def get_plugin_paths(self):
         """Ftrack plugin paths."""
+        ######## PLUGINS_PATHS - BEGIN
+        """
         return {
             "publish": [os.path.join(FTRACK_MODULE_DIR, "plugins", "publish")]
         }
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path(self.name, FTRACK_MODULE_DIR)
+        #TODO(derek): shouldn't add "actions" path?
+        return {
+            "publish": [os.path.join(plugins_dir, "publish")]
+        }
+        ######## PLUGINS_PATHS - END
+
+    ######## PLUGINS_PATHS - MID
+    def get_handlers_paths(self, server=True):
+        if server:
+            sub_dir = "event_handlers_server"
+        else:
+            sub_dir = "event_handlers_user"
+
+        plugins_dir = get_plugins_path(self.name, FTRACK_MODULE_DIR)
+        #TODO(derek): change that...
+        parent_dir = os.path.sep.join(plugins_dir.split(os.path.sep)[:-1])
+
+        event_handlers_path = os.path.join(parent_dir, sub_dir)
+        if not os.path.exists(event_handlers_path):
+            self.log.warning((
+                "Event handlers path not found '{}'"
+                " -> Using path from local install"
+            ).format(event_handlers_path))
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            event_handlers_path = os.path.join(current_dir, sub_dir)
+        return [ event_handlers_path ]
+    ######## PLUGINS_PATHS - END
 
     def get_launch_hook_paths(self):
         """Implementation for applications launch hooks."""

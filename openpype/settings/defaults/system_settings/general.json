@@ -4,6 +4,11 @@
     "admin_password": "",
     "environment": {},
     "log_to_server": true,
+    "studio_extra_path": {
+        "windows": "",
+        "linux": "",
+        "darwin": ""
+    },
     "disk_mapping": {
         "windows": [],
         "linux": [],

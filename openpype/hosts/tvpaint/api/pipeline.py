@@ -11,7 +11,11 @@ import pyblish.api
 from openpype.client import get_project, get_asset_by_name
 from openpype.hosts import tvpaint
 from openpype.settings import get_current_project_settings
-from openpype.lib import register_event_callback
+######## PLUGINS_PATHS - BEGIN
+#from openpype.lib import register_event_callback
+######## PLUGINS_PATHS - MID
+from openpype.lib import register_event_callback, get_plugins_path
+######## PLUGINS_PATHS - END
 from openpype.pipeline import (
     legacy_io,
     register_loader_plugin_path,
@@ -27,7 +31,11 @@ from .lib import (
 log = logging.getLogger(__name__)
 
 HOST_DIR = os.path.dirname(os.path.abspath(tvpaint.__file__))
-PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("tvpaint", HOST_DIR)
+######## PLUGINS_PATHS - END
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")
 CREATE_PATH = os.path.join(PLUGINS_DIR, "create")

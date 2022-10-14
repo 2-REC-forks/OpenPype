@@ -19,6 +19,9 @@ from openpype.tools.utils import host_tools
 from openpype.tools.workfiles.lock_dialog import WorkfileLockDialog
 from openpype.lib import (
     register_event_callback,
+    ######## PLUGINS_PATHS - MID
+    get_plugins_path,
+    ######## PLUGINS_PATHS - END
     emit_event
 )
 from openpype.pipeline import (
@@ -54,7 +57,11 @@ from .workio import (
 
 log = logging.getLogger("openpype.hosts.maya")
 
-PLUGINS_DIR = os.path.join(MAYA_ROOT_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(MAYA_ROOT_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("maya", MAYA_ROOT_DIR)
+######## PLUGINS_PATHS - END
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")
 CREATE_PATH = os.path.join(PLUGINS_DIR, "create")

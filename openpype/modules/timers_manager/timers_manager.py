@@ -8,6 +8,9 @@ from openpype_interfaces import (
     ITrayService,
     IPluginPaths
 )
+######## PLUGINS_PATHS - MID
+from openpype.lib import get_plugins_path
+######## PLUGINS_PATHS - END
 from openpype.lib.events import register_event_callback
 
 from .exceptions import InvalidContextError
@@ -192,9 +195,18 @@ class TimersManager(
     def get_plugin_paths(self):
         """Implementation of `IPluginPaths`."""
 
+        ######## PLUGINS_PATHS - BEGIN
+        """
         return {
             "publish": [os.path.join(TIMER_MODULE_DIR, "plugins", "publish")]
         }
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path(self.name, TIMER_MODULE_DIR)
+        return {
+            "publish": [os.path.join(plugins_dir, "publish")]
+        }
+        ######## PLUGINS_PATHS - END
 
     @staticmethod
     def get_timer_data_for_context(

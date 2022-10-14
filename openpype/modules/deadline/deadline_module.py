@@ -3,7 +3,11 @@ import requests
 import six
 import sys
 
-from openpype.lib import requests_get, Logger
+######## PLUGINS_PATHS - BEGIN
+#from openpype.lib import requests_get, Logger
+######## PLUGINS_PATHS - MID
+from openpype.lib import requests_get, Logger, get_plugins_path
+######## PLUGINS_PATHS - END
 from openpype.modules import OpenPypeModule
 from openpype_interfaces import IPluginPaths
 
@@ -40,9 +44,18 @@ class DeadlineModule(OpenPypeModule, IPluginPaths):
     def get_plugin_paths(self):
         """Deadline plugin paths."""
         current_dir = os.path.dirname(os.path.abspath(__file__))
+        ######## PLUGINS_PATHS - BEGIN
+        """
         return {
             "publish": [os.path.join(current_dir, "plugins", "publish")]
         }
+        """
+        ######## PLUGINS_PATHS - MID
+        plugins_dir = get_plugins_path(self.name, current_dir)
+        return {
+            "publish": [os.path.join(plugins_dir, "publish")]
+        }
+        ######## PLUGINS_PATHS - END
 
     @staticmethod
     def get_deadline_pools(webservice, log=None):

@@ -48,6 +48,10 @@ from .attribute_definitions import (
 from .env_tools import (
     env_value_to_bool,
     get_paths_from_environ,
+    ######## PLUGINS_PATHS - MID
+    get_plugins_env,
+    get_plugins_path
+    ######## PLUGINS_PATHS - END
 )
 
 from .terminal import Terminal

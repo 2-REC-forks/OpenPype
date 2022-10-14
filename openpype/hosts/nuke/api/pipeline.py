@@ -8,7 +8,11 @@ import pyblish.api
 
 import openpype
 from openpype.settings import get_current_project_settings
-from openpype.lib import register_event_callback, Logger
+######## PLUGINS_PATHS - BEGIN
+#from openpype.lib import register_event_callback, Logger
+######## PLUGINS_PATHS - MID
+from openpype.lib import register_event_callback, Logger, get_plugins_path
+######## PLUGINS_PATHS - END
 from openpype.pipeline import (
     register_loader_plugin_path,
     register_creator_plugin_path,
@@ -44,7 +48,11 @@ from .workfile_template_builder import (
 log = Logger.get_logger(__name__)
 
 HOST_DIR = os.path.dirname(os.path.abspath(openpype.hosts.nuke.__file__))
-PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("nuke", HOST_DIR)
+######## PLUGINS_PATHS - END
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load")
 CREATE_PATH = os.path.join(PLUGINS_DIR, "create")

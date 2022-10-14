@@ -6,7 +6,11 @@ import contextlib
 from collections import OrderedDict
 
 from pyblish import api as pyblish
-from openpype.lib import Logger
+######## PLUGINS_PATHS - BEGIN
+#from openpype.lib import Logger
+######## PLUGINS_PATHS - MID
+from openpype.lib import Logger, get_plugins_path
+######## PLUGINS_PATHS - END
 from openpype.pipeline import (
     schema,
     register_creator_plugin_path,
@@ -23,7 +27,11 @@ log = Logger.get_logger(__name__)
 # plugin paths
 API_DIR = os.path.dirname(os.path.abspath(__file__))
 HOST_DIR = os.path.dirname(API_DIR)
-PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - BEGIN
+#PLUGINS_DIR = os.path.join(HOST_DIR, "plugins")
+######## PLUGINS_PATHS - MID
+PLUGINS_DIR = get_plugins_path("hiero", HOST_DIR)
+######## PLUGINS_PATHS - END
 PUBLISH_PATH = os.path.join(PLUGINS_DIR, "publish").replace("\\", "/")
 LOAD_PATH = os.path.join(PLUGINS_DIR, "load").replace("\\", "/")
 CREATE_PATH = os.path.join(PLUGINS_DIR, "create").replace("\\", "/")
